@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Card from './Card';
 import './App.css';
 
-function App() {
+
+const App = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios
+        .get('https://jsonplaceholder.typicode.com/posts')
+        .then((response) => {
+          const firstTenPosts = response.data.slice(0, 10);
+          setPosts(firstTenPosts);
+        })
+        .catch((error) => {
+          console.error('Error al obtener los posts:', error);
+        });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="container">
+        {posts.map((post) => (
+            <Card key={post.id} product={post} />
+        ))}
+      </div>
   );
-}
+};
 
 export default App;
